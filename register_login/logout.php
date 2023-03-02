@@ -11,5 +11,5 @@ $_SESSION = array();
 session_destroy();
 
 // send user back to Fresno State Canvas
-//header("location: https://fresnostate.instructure.com");
+header("location: https://fresnostate.instructure.com");
 ?>  

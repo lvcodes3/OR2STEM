@@ -1,30 +1,81 @@
 <?php
 // start the session (loggedIn, name, email, type, pic, course_name, course_id)
 session_start();
-
-// if user is not logged in then redirect them back to Fresno State Canvas
-if(!isset($_SESSION["loggedIn"]) || $_SESSION["loggedIn"] !== true){
-    header("location: https://fresnostate.instructure.com");
-    exit;
-}
-
-// if user account type is not 'Learner' then force logout
-if($_SESSION["type"] !== "Learner"){
-    header("location: ../register_login/logout.php");
-    exit;
-}
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title><?= $_SESSION["course_name"]; ?></title>
-        <link rel="stylesheet" href="../assets/css/student/student_index.css" />
+        <title>Frequently Asked Questions</title>
         <link rel="stylesheet" href="../assets/css/global/header.css" />
         <link rel="stylesheet" href="../assets/css/global/global.css" />
         <link rel="stylesheet" href="../assets/css/global/footer.css" />
+        <style>
+            /* HEADER STYLING */
+            #OR2STEM-HEADER {
+                color: navy;
+                font-weight: bold;
+                padding-left: 20px;
+            }
+            #OR2STEM-HEADER-A {
+                color: navy;
+                text-decoration: none;
+                transition-duration: 0.5s;
+            }
+            #OR2STEM-HEADER-A:hover {
+                color: red;
+            }
+            #userProfile {
+                float: right;
+                margin-right: 15px;
+                position: relative;
+            }
+            #userButton {
+                width: auto;
+                height: 30px;
+                font-size: 14px;
+                font-weight: 600;
+                color: white;
+                background-color: navy;
+                cursor: pointer;
+                margin-right: 30px;
+            }
+            #user-picture {
+                width: 30px; 
+                height: 30px; 
+                position: absolute; 
+                right: 0; 
+                bottom: 0;
+            }
+            .dropdown {
+                position: relative;
+                display: inline-block;
+            }
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                margin-left: 3px;
+                color: white;
+                background-color: navy;
+                width: 85px;
+                box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                z-index: 2;
+            }
+            .dropdown-content a {
+                color: white;
+                display: block;
+                text-decoration: none;
+                padding: 5px;
+                text-align: center;
+            }
+            .dropdown a:hover {
+                background-color: red;
+            }
+            .show {display: block;}
+
+
+        </style>
     </head>
     <body>
         <div id="app">
@@ -39,7 +90,9 @@ if($_SESSION["type"] !== "Learner"){
                     </div>
 
                     <div class="site-logo">
-                        <h1 id="OR2STEM-HEADER">On-Ramp to STEM</h1>
+                        <h1 id="OR2STEM-HEADER">
+                            <a id="OR2STEM-HEADER-A">On-Ramp to STEM</a>
+                        </h1>
                     </div>
 
                     <div class="inner-banner">
@@ -49,17 +102,8 @@ if($_SESSION["type"] !== "Learner"){
             </header>
 
             <main>
-                <div id="header-div">
-                    <h1><?= $_SESSION["course_name"]; ?></h1>
-                    <hr style="border: 1px solid black;">
-                </div>
-
-                <div class="btn-div">
-                    <button class="regular_button" onclick="redirectToStudentBrowse()">Browse Available Questions</button>
-                </div>
-                
-                <div class="btn-div">
-                    <button class="regular_button" onclick="redirectToStudentAssessment()">Assessments</button>
+                <div>
+                    <h1>Frequently Asked Questions</h1>
                 </div>
             </main>
 
@@ -67,21 +111,21 @@ if($_SESSION["type"] !== "Learner"){
                 <div class="container">
                     <div class="footer-top flex">
                         <div class="logo">
-                            <a href=""><p>On-Ramp to STEM</p></a>
+                            <a id="footer-link"><p>On-Ramp to STEM</p></a>
                         </div>
                         <div class="navigation">
                             <h4>Navigation</h4>
                             <ul>
-                                <li><a href="">Home</a></li>
-                                <li><a href="../navigation/about-us.php">About Us</a></li>
-                                <li><a href="../navigation/faq.php">FAQ</a></li>
-                                <li><a href="../navigation/contact-us.php">Contact Us</a></li>
+                                <li><a id="footer-link-home">Home</a></li>
+                                <li><a href="about-us.php">About Us</a></li>
+                                <li><a href="">FAQ</a></li>
+                                <li><a href="contact-us.php">Contact Us</a></li>
                             </ul>
                         </div>
                         <div class="navigation">
                             <h4>External Links</h4>
                             <ul>
-                                <li><a href=""> CSU SCALE </a></li>
+                                <li><a id="footer-link-scale"> CSU SCALE </a></li>
                                 <li><a href="http://fresnostate.edu/" target="_blank"> CSU Fresno Homepage </a></li>
                                 <li><a href="http://www.fresnostate.edu/csm/csci/" target="_blank"> Department of Computer Science </a></li>
                                 <li><a href="http://www.fresnostate.edu/csm/math/" target="_blank"> Department of Mathematics </a></li>
@@ -98,16 +142,21 @@ if($_SESSION["type"] !== "Learner"){
                 </div>
             </footer>
         </div>
-        
         <script type="text/javascript">
-
-            let redirectToStudentBrowse = () =>{
-                window.location.href = "student_browse.php";
+            // DRIVER
+            if ("<?= $_SESSION['type'] ?>" === "Instructor" || "<?= $_SESSION['type'] ?>" === "Mentor") {
+                document.getElementById("OR2STEM-HEADER-A").setAttribute("href", "../instructor/instr_index1.php");
+                document.getElementById("footer-link").setAttribute("href", "../instructor/instr_index1.php");
+                document.getElementById("footer-link-home").setAttribute("href", "../instructor/instr_index1.php");
+                document.getElementById("footer-link-scale").setAttribute("href", "../instructor/instr_index1.php");
+            }
+            else {
+                document.getElementById("OR2STEM-HEADER-A").setAttribute("href", "../student/student_index.php");
+                document.getElementById("footer-link").setAttribute("href", "../student/student_index.php");
+                document.getElementById("footer-link-home").setAttribute("href", "../student/student_index.php");
+                document.getElementById("footer-link-scale").setAttribute("href", "../student/student_index.php");
             }
 
-            let redirectToStudentAssessment = () =>{
-                window.location.href = "student_assessment1.php";
-            }
 
             // controlling the user profile dropdown
             /* When the user clicks on the button, toggle between hiding and showing the dropdown content */
@@ -127,7 +176,6 @@ if($_SESSION["type"] !== "Learner"){
                     }
                 }
             }
-        
         </script>
     </body>
 </html>
