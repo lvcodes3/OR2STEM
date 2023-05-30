@@ -1,38 +1,25 @@
 <?php
 // start the session (loggedIn, name, email, type, pic, course_name, course_id)
 session_start();
-
-// if user is not logged in then redirect them back to Fresno State Canvas
-if(!isset($_SESSION["loggedIn"]) || $_SESSION["loggedIn"] !== true){
-    header("location: https://fresnostate.instructure.com");
-    exit;
-}
-
-// if user account type is not 'Learner' then force logout
-if($_SESSION["type"] !== "Learner"){
-    header("location: ../register_login/logout.php");
-    exit;
-}
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title><?= $_SESSION["course_name"]; ?></title>
-        <link rel="stylesheet" type="text/css" href="../assets/css/global/global.css" />
+        <title>Contact Us</title>
+        <link rel="stylesheet" type="text/css" href="../../assets/css/global/global.css" />
         <link id="css-header" rel="stylesheet" type="text/css" href="" />
         <link id="css-mode" rel="stylesheet" type="text/css" href="" />
         <script type="text/javascript">
             const toggleBanner = () => {
                 const cssHeader = document.getElementById("css-header");
-                cssHeader.setAttribute("href", `../assets/css/global/${window.localStorage.getItem("banner")}-header.css`);
+                cssHeader.setAttribute("href", `../../assets/css/global/${window.localStorage.getItem("banner")}-header.css`);
             }
 
             const toggleCSS = () => {
                 const cssLink = document.getElementById("css-mode");
-                cssLink.setAttribute("href", `../assets/css/student/student_index-${window.localStorage.getItem("mode")}-mode.css`);
+                cssLink.setAttribute("href", `./contact-us-${window.localStorage.getItem("mode")}-mode.css`);
             }
 
             // mode
@@ -58,21 +45,23 @@ if($_SESSION["type"] !== "Learner"){
             }
         </script>
     </head>
-    <body>
+    <body onload="initialize();">
         <div id="app">
             <header>
                 <nav class="container">
                     <div id="userProfile" class="dropdown">
                         <button id="userButton" class="dropbtn" onclick="showDropdown()">Hello <?= $_SESSION["name"]; ?>!</button>
                         <div id="myDropdown" class="dropdown-content">
-                            <a href="../navigation/settings/settings.php">Settings</a>
-                            <a href="../register_login/logout.php">Logout</a>
+                            <a href="../settings/settings.php">Settings</a>
+                            <a href="../../register_login/logout.php">Logout</a>
                         </div>
                         <img id="user-picture" src="<?= $_SESSION['pic']; ?>" alt="user-picture">
                     </div>
 
                     <div class="site-logo">
-                        <h1 id="OR2STEM-HEADER">On-Ramp to STEM</h1>
+                        <h1 id="OR2STEM-HEADER">
+                            <a id="OR2STEM-HEADER-A">On-Ramp to STEM</a>
+                        </h1>
                     </div>
 
                     <div class="inner-banner">
@@ -82,17 +71,34 @@ if($_SESSION["type"] !== "Learner"){
             </header>
 
             <main>
-                <div id="header-div">
-                    <h1><?= $_SESSION["course_name"]; ?></h1>
-                    <hr style="border: 1px solid black;">
-                </div>
+				<div>
+					<h1>Contact Us</h1>
+				</div>
 
-                <div class="btn-div">
-                    <button class="regular_button" onclick="redirectToStudentBrowse()">Browse Available Practice Questions</button>
-                </div>
-                
-                <div class="btn-div">
-                    <button class="regular_button" onclick="redirectToStudentAssessment()">Browse Available Assessments</button>
+				<div class="form-div">
+                    <form action="https://formsubmit.co/hcecotti@mail.fresnostate.edu" method="POST">
+                        <div class="form-div-inner">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" style="width:70%; text-align:center;" value="<?= $_SESSION["name"]; ?>" required>
+                        </div>
+
+                        <div class="form-div-inner">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" style="width:70%; text-align:center;" value="<?= $_SESSION["email"]; ?>" required>
+                        </div>
+
+                        <div class="form-div-inner">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" style="width:70%; text-align:center;" placeholder="Bug or Error" required>
+                        </div>
+
+                        <div class="form-div-inner">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" style="width: 70%; height:200px;" placeholder="Type message here" required></textarea>
+                        </div>
+
+                        <input id="submitInput" type="submit" value="Submit">
+                    </form>
                 </div>
             </main>
 
@@ -100,21 +106,21 @@ if($_SESSION["type"] !== "Learner"){
                 <div class="container">
                     <div class="footer-top flex">
                         <div class="logo">
-                            <a href=""><p>On-Ramp to STEM</p></a>
+                            <a id="footer-link"><p>On-Ramp to STEM</p></a>
                         </div>
                         <div class="navigation">
                             <h4>Navigation</h4>
                             <ul>
-                                <li><a href="">Home</a></li>
-                                <li><a href="../navigation/about-us/about-us.php">About Us</a></li>
-                                <li><a href="../navigation/faq/faq.php">FAQ</a></li>
-                                <li><a href="../navigation/contact-us/contact-us.php">Contact Us</a></li>
+                                <li><a id="footer-link-home">Home</a></li>
+                                <li><a href="../about-us/about-us.php">About Us</a></li>
+                                <li><a href="../faq/faq.php">FAQ</a></li>
+                                <li><a href="./contact-us.php">Contact Us</a></li>
                             </ul>
                         </div>
                         <div class="navigation">
                             <h4>External Links</h4>
                             <ul>
-                                <li><a href=""> CSU SCALE </a></li>
+                                <li><a id="footer-link-scale"> CSU SCALE </a></li>
                                 <li><a href="http://fresnostate.edu/" target="_blank"> CSU Fresno Homepage </a></li>
                                 <li><a href="http://www.fresnostate.edu/csm/csci/" target="_blank"> Department of Computer Science </a></li>
                                 <li><a href="http://www.fresnostate.edu/csm/math/" target="_blank"> Department of Mathematics </a></li>
@@ -131,14 +137,22 @@ if($_SESSION["type"] !== "Learner"){
                 </div>
             </footer>
         </div>
-        
-        <script type="text/javascript">
-            let redirectToStudentBrowse = () => {
-                window.location.href = "student_browse.php";
-            }
 
-            let redirectToStudentAssessment = () => {
-                window.location.href = "student_assessment1.php";
+        <script type="text/javascript">
+            const initialize = () => {
+                // links
+                if ("<?= $_SESSION['type'] ?>" === "Instructor" || "<?= $_SESSION['type'] ?>" === "Mentor") {
+                    document.getElementById("OR2STEM-HEADER-A").setAttribute("href", "../../instructor/instr_index1.php");
+                    document.getElementById("footer-link").setAttribute("href", "../../instructor/instr_index1.php");
+                    document.getElementById("footer-link-home").setAttribute("href", "../../instructor/instr_index1.php");
+                    document.getElementById("footer-link-scale").setAttribute("href", "../../instructor/instr_index1.php");
+                }
+                else {
+                    document.getElementById("OR2STEM-HEADER-A").setAttribute("href", "../../student/student_index.php");
+                    document.getElementById("footer-link").setAttribute("href", "../../student/student_index.php");
+                    document.getElementById("footer-link-home").setAttribute("href", "../../student/student_index.php");
+                    document.getElementById("footer-link-scale").setAttribute("href", "../../student/student_index.php");
+                }                
             }
 
             // controlling the user profile dropdown

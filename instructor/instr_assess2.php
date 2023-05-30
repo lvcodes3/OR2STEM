@@ -19,7 +19,7 @@ $amt_students; // value used to accept unique student_email post input
 $student_email; // holds student's email
 $student_name; // holds student's full name
 $student_complete; // holds number of student's complete los
-$student_incomplete; // holds number of student's incomplete los
+$student_total; // holds number of student's total los
 
 // processing client form data when it is submitted
 if($_SERVER["REQUEST_METHOD"] === "POST"){
@@ -30,7 +30,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
             $student_email = $_POST["student_email_$i"];
             $student_name = $_POST["student_name_$i"];
             $student_complete = $_POST["student_complete_$i"];
-            $student_incomplete = $_POST["student_incomplete_$i"];
+            $student_total = $_POST["student_incomplete_$i"];
         }
     }
 }
@@ -42,11 +42,42 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     <head>
         <meta charset="UTF-8">
         <title>Student Evaluation</title>
-        <link rel="stylesheet" href="../assets/css/instructor/instr_assess2.css" />
-        <link rel="stylesheet" href="../assets/css/global/or2stem.css" />
-        <link rel="stylesheet" href="../assets/css/global/header.css" />
-        <link rel="stylesheet" href="../assets/css/global/global.css" />
-        <link rel="stylesheet" href="../assets/css/global/footer.css" />
+        <link rel="stylesheet" type="text/css" href="../assets/css/global/global.css" />
+        <link id="css-header" rel="stylesheet" type="text/css" href="" />
+        <link id="css-mode" rel="stylesheet" type="text/css" href="" />
+        <script type="text/javascript">
+            const toggleBanner = () => {
+                const cssHeader = document.getElementById("css-header");
+                cssHeader.setAttribute("href", `../assets/css/global/${window.localStorage.getItem("banner")}-header.css`);
+            }
+
+            const toggleCSS = () => {
+                const cssLink = document.getElementById("css-mode");
+                cssLink.setAttribute("href", `../assets/css/instructor/instr_assess2-${window.localStorage.getItem("mode")}-mode.css`);
+            }
+
+            // mode
+            let item = localStorage.getItem("mode");
+            const cssLink = document.getElementById("css-mode");
+            if (item === null) {
+                window.localStorage.setItem('mode', 'OR2STEM');
+                toggleCSS();
+            }
+            else {
+                toggleCSS();
+            }
+
+            // banner
+            item = localStorage.getItem("banner");
+            const cssHeader = document.getElementById("css-header");
+            if (item === null) {
+                window.localStorage.setItem('banner', 'OR2STEM');
+                toggleBanner();
+            }
+            else {
+                toggleBanner();
+            }
+        </script>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     </head>
     <body onload='initialize();'>
@@ -56,6 +87,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
                     <div id="userProfile" class="dropdown">
                         <button id="userButton" class="dropbtn" onclick="showDropdown()">Hello <?= $_SESSION["name"]; ?>!</button>
                         <div id="myDropdown" class="dropdown-content">
+                            <a href="../navigation/settings/settings.php">Settings</a>
                             <a href="../register_login/logout.php">Logout</a>
                         </div>
                         <img id="user-picture" src="<?= $_SESSION['pic']; ?>" alt="user-picture">
@@ -110,9 +142,9 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
                             <h4>Navigation</h4>
                             <ul>
                                 <li><a href="instr_index1.php">Home</a></li>
-                                <li><a href="../navigation/about-us.php">About Us</a></li>
-                                <li><a href="../navigation/faq.php">FAQ</a></li>
-                                <li><a href="../navigation/contact-us.php">Contact Us</a></li>
+                                <li><a href="../navigation/about-us/about-us.php">About Us</a></li>
+                                <li><a href="../navigation/faq/faq.php">FAQ</a></li>
+                                <li><a href="../navigation/contact-us/contact-us.php">Contact Us</a></li>
                             </ul>
                         </div>
                         <div class="navigation">
@@ -143,7 +175,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
             let section_clicked = []; // boolean pointers for each section button on table
 
 
-            let initialize = () => {
+            const initialize = () => {
                 getChapterData("<?= $student_email; ?>");
                 drawChart();
                 document.getElementById("student_table").style.display = "";
@@ -389,11 +421,12 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
                     var data = google.visualization.arrayToDataTable([
                         ['Status', 'Learning Outcomes'],
                         ['Complete', <?= $student_complete; ?>],
-                        ['Incomplete', <?= $student_incomplete; ?>],
+                        ['Remaining', <?= $student_total - $student_complete; ?> ],
                     ]);
 
                     var options = {
-                        colors: ['green', 'red'],
+                        colors: ['green', 'white'],
+                        pieSliceBorderColor: 'black',
                         legend: 'none'
                     };
 

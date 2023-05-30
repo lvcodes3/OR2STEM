@@ -38,10 +38,42 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <head>
         <meta charset="UTF-8">
         <title>Instructor Home Page</title>
-        <link rel="stylesheet" href="../assets/css/instructor/instr_index1.css" />
-        <link rel="stylesheet" href="../assets/css/global/header.css" />
-        <link rel="stylesheet" href="../assets/css/global/global.css" />
-        <link rel="stylesheet" href="../assets/css/global/footer.css" />
+        <link rel="stylesheet" type="text/css" href="../assets/css/global/global.css" />
+        <link id="css-header" rel="stylesheet" type="text/css" href="" />
+        <link id="css-mode" rel="stylesheet" type="text/css" href="" />
+        <script type="text/javascript">
+            const toggleBanner = () => {
+                const cssHeader = document.getElementById("css-header");
+                cssHeader.setAttribute("href", `../assets/css/global/${window.localStorage.getItem("banner")}-header.css`);
+            }
+
+            const toggleCSS = () => {
+                const cssLink = document.getElementById("css-mode");
+                cssLink.setAttribute("href", `../assets/css/instructor/instr_index1-${window.localStorage.getItem("mode")}-mode.css`);
+            }
+
+            // mode
+            let item = localStorage.getItem("mode");
+            const cssLink = document.getElementById("css-mode");
+            if (item === null) {
+                window.localStorage.setItem('mode', 'OR2STEM');
+                toggleCSS();
+            }
+            else {
+                toggleCSS();
+            }
+
+            // banner
+            item = localStorage.getItem("banner");
+            const cssHeader = document.getElementById("css-header");
+            if (item === null) {
+                window.localStorage.setItem('banner', 'OR2STEM');
+                toggleBanner();
+            }
+            else {
+                toggleBanner();
+            }
+        </script>
     </head>
     <body onload="initialize();">
         <div id="app">
@@ -50,6 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <div id="userProfile" class="dropdown">
                         <button id="userButton" class="dropbtn" onclick="showDropdown()">Hello <?= $_SESSION["name"]; ?>!</button>
                         <div id="myDropdown" class="dropdown-content">
+                            <a href="../navigation/settings/settings.php">Settings</a>
                             <a href="../register_login/logout.php">Logout</a>
                         </div>
                         <img id="user-picture" src="<?= $_SESSION['pic']; ?>" alt="user-picture">
@@ -80,9 +113,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </div>
 
                 <div id="static-dynamic-div" style="display:none;">
-                    <h2>Browse through Static or Dynamic questions.</h2>
-                    <button class="q-btn" onclick="redirect(0)">Static Questions</button>
-                    <button class="q-btn" onclick="redirect(1)">Dynamic Questions</button>
+                    <h2>Browse through OpenStax or IMathAS questions.</h2>
+                    <button class="q-btn" onclick="redirect(0)">OpenStax Questions</button>
+                    <button class="q-btn" onclick="redirect(1)">IMathAS Questions</button>
                 </div>
             </main>
 
@@ -96,9 +129,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             <h4>Navigation</h4>
                             <ul>
                                 <li><a href="">Home</a></li>
-                                <li><a href="../navigation/about-us.php">About Us</a></li>
-                                <li><a href="../navigation/faq.php">FAQ</a></li>
-                                <li><a href="../navigation/contact-us.php">Contact Us</a></li>
+                                <li><a href="../navigation/about-us/about-us.php">About Us</a></li>
+                                <li><a href="../navigation/faq/faq.php">FAQ</a></li>
+                                <li><a href="../navigation/contact-us/contact-us.php">Contact Us</a></li>
                             </ul>
                         </div>
                         <div class="navigation">
@@ -128,13 +161,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             const course_names = <?= json_encode($course_names); ?>;
             const course_ids = <?= json_encode($course_ids); ?>;
 
-            let initialize = () => {
-                displayClasses();
-                document.getElementById("class-list-div").style.display = "";
-                document.getElementById("static-dynamic-div").style.display = "";
-                document.getElementById("loading-div").style.display = "none";
-            }
-
             let displayClasses = () => {
                 let str = '<form id="myForm" action="" method="POST">';
                 str += '<input type="number" id="number" name="number" style="display: none;" />';
@@ -156,6 +182,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 if (idx) window.location.href = "./dynamic.php";
                 else window.location.href = "./static.php";
             }
+
+
+            const initialize = () => {
+                // content
+                displayClasses();
+                document.getElementById("class-list-div").style.display = "";
+                document.getElementById("static-dynamic-div").style.display = "";
+                document.getElementById("loading-div").style.display = "none";
+            }
+
    
             // controlling the user profile dropdown
             /* When the user clicks on the button, toggle between hiding and showing the dropdown content */
